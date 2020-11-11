@@ -39,10 +39,11 @@ nano ~/.vnc/xstartup
 
 Saisir ceci:
 ```
-unset SESSION_MANAGER
-metacity &
-gnome-settings-daemon &
-gnome-panel &
+#!/bin/sh
+exec /etc/vnc/xstartup
+xrdb $HOME/.Xresources
+vncconfig -iconic &
+dbus-launch --exit-with-session gnome-session &
 ```
 
 Modifier les permissions du fichier de config :
@@ -65,6 +66,8 @@ Tunnel SSH, si la securite est un concern.
 ```
 ssh -i ~/.ssh/gcp-key -L 5901:127.0.0.1:5901 -C -N -l guillaumecummings 35.230.15.215
 ```
+
+Demarrer vnc server au startup ???
 
 Regarder le script de demarage:
 ```
