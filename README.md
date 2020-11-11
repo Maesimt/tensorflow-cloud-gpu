@@ -97,6 +97,11 @@ If you cant connect after setting the firewall rule, try:
 vncserver -localhost no
 ```
 
+If after pip install jupyter notebook you can't start jupyter:
+```
+~/.local/bin/jupyter-notebook
+```
+
 Demarrer vnc server au startup ???
 
 Regarder le script de demarage:
