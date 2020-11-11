@@ -21,7 +21,7 @@ Start the vnc server to be prompted to create a password.
 vncserver
 ```
 
-Kill the server.
+Pour kill un ecran sur le server: (:1) (:2) ou (:N)
 ```bash
 cummings_guillaume@rage-with-gpu:~$ vncserver -kill :1
 Killing Xvnc4 process ID 15997
@@ -49,6 +49,31 @@ dbus-launch --exit-with-session gnome-session &
 Modifier les permissions du fichier de config :
 ```
 sudo chmod +x ~/.vnc/xstartup
+```
+
+Create a file with this:
+```
+sudo nano /etc/vnc/xstartup
+```
+
+add this inside :
+```
+#!/bin/bash
+unset SESSION_MANAGER
+exec /etc/X11/xinit/xinitrc
+```
+
+Give the read permission to everyone:
+```
+sudo chmod 0755 /etc/vnc/xstartup
+```
+
+Pour les ecrans disponible sur le serveur:
+```bash
+cummings_guillaume@rage-with-gpu:~$ vncserver -list
+TigerVNC server sessions:
+X DISPLAY #     PROCESS ID
+:1              3623
 ```
 
 To verify that the installation is working, you can check if the port is open.
