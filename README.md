@@ -4,14 +4,16 @@
 
 source: https://medium.com/google-cloud/graphical-user-interface-gui-for-google-compute-engine-instance-78fccda09e5c
 
-Install gnome.
+source: https://www.tecmint.com/install-and-configure-vnc-server-on-ubuntu/
+
+Install gnome for ubuntu.
 ```bash
-sudo apt-get install gnome-core -y
+ sudo apt install ubuntu-gnome-desktop
 ```
 
 Install a VNC server
 ```
-sudo apt-get install vnc4server -y
+sudo apt install tigervnc-standalone-server tigervnc-common tigervnc-xorg-extension tigervnc-viewer
 ```
 
 Start the vnc server to be prompted to create a password.
@@ -19,14 +21,7 @@ Start the vnc server to be prompted to create a password.
 vncserver
 ```
 
-To verify that the installation is working, you can check if the port is open.
-```bash
-cummings_guillaume@rage-with-gpu:~$ nc localhost 5901
-RFB 003.008
-```
-*Add a firewall(link to section) rule to allow ingress on 5901.
-
-After the verification, you have to kill the session.
+Kill the server.
 ```bash
 cummings_guillaume@rage-with-gpu:~$ vncserver -kill :1
 Killing Xvnc4 process ID 15997
@@ -55,11 +50,18 @@ Modifier les permissions du fichier de config :
 sudo chmod +x ~/.vnc/xstartup
 ```
 
+To verify that the installation is working, you can check if the port is open.
+```bash
+cummings_guillaume@rage-with-gpu:~$ nc localhost 5901
+RFB 003.008
+```
+*Add a firewall(link to section) rule to allow ingress on 5901.
+
 Verifier la connexion a distance
 ```
 nc 104.197.91.140 5901
 ```
-Tunnel SSH
+Tunnel SSH, si la securite est un concern.
 ```
 ssh -i ~/.ssh/gcp-key -L 5901:127.0.0.1:5901 -C -N -l guillaumecummings 35.230.15.215
 ```
