@@ -92,6 +92,11 @@ Tunnel SSH, si la securite est un concern.
 ssh -i ~/.ssh/gcp-key -L 5901:127.0.0.1:5901 -C -N -l guillaumecummings 35.230.15.215
 ```
 
+If you cant connect after setting the firewall rule, try:
+```
+vncserver -localhost no
+```
+
 Demarrer vnc server au startup ???
 
 Regarder le script de demarage:
