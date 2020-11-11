@@ -50,7 +50,31 @@ gnome-settings-daemon &
 gnome-panel &
 ```
 
+Modifier les permissions du fichier de config :
+```
+sudo chmod +x ~/.vnc/xstartup
+```
+
 Verifier la connexion a distance
 ```
 nc 104.197.91.140 5901
+```
+Tunnel SSH
+```
+ssh -i ~/.ssh/gcp-key -L 5901:127.0.0.1:5901 -C -N -l guillaumecummings 35.230.15.215
+```
+
+Regarder le script de demarage:
+```
+cummings_guillaume@rage-with-gpu:~$ grep Exec= /usr/share/xsessions/*.desktop
+/usr/share/xsessions/gnome-classic.desktop:Exec=gnome-session-classic
+/usr/share/xsessions/gnome-classic.desktop:TryExec=gnome-session
+/usr/share/xsessions/gnome.desktop:Exec=gnome-session
+/usr/share/xsessions/gnome.desktop:TryExec=gnome-session
+/usr/share/xsessions/gnome-xorg.desktop:Exec=gnome-session
+/usr/share/xsessions/gnome-xorg.desktop:TryExec=gnome-session
+/usr/share/xsessions/ubuntu-communitheme-snap.desktop:Exec=env GNOME_SHELL_SESSION_MODE=ubuntu-communitheme /snap/communitheme/current/session
+/usr/share/xsessions/ubuntu-communitheme-snap.desktop:TryExec=/snap/communitheme/current/session
+/usr/share/xsessions/ubuntu.desktop:Exec=env GNOME_SHELL_SESSION_MODE=ubuntu gnome-session --session=ubuntu
+/usr/share/xsessions/ubuntu.desktop:TryExec=gnome-shell
 ```
