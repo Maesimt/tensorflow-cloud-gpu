@@ -141,8 +141,14 @@ To avoid this, run the container by specifying your user's userid:
 $ docker run -u $(id -u):$(id -g) args...
 root@964b9789b1b1:/tf# 
 ```
+```console
+root@964b9789b1b1:/tf# apt install git -y && git clone https://github.com/mswawola-cegep/csfoy-420-a59-sf.git
 ```
-apt install git -y && git clone https://github.com/mswawola-cegep/csfoy-420-a59-sf.git
+Recuperer le token juypter pour se logger le site.
+```console
+root@964b9789b1b1:/tf# jupyter notebook list
+Currently running servers:
+http://0.0.0.0:8888/?token=f70b696e4691d365a5c4ad67ee404bd9e6fe795d068e64c8 :: /tf
 ```
 
 # Manual installation
