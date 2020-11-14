@@ -1,6 +1,151 @@
-# tensorflow-cloud-gpu
+# Start a vm in the cloud
 
-## Start a vm in the cloud
+# Installation with Docker
+
+source:
+- https://www.tensorflow.org/install/docker?hl=fr
+- https://collabnix.com/introducing-new-docker-cli-api-support-for-nvidia-gpus-under-docker-engine-19-03-0-beta-release/
+
+1. Verifier que la carte Nvidia est detecter.
+```console
+tensorflow-gpu:~$ lspci -vv | grep -i nvidia
+00:04.0 3D controller: NVIDIA Corporation GP100GL [Tesla P100 PCIe 16GB] (rev a1)
+        Subsystem: NVIDIA Corporation GP100GL [Tesla P100 PCIe 16GB]
+        Kernel modules: nvidiafb
+```
+
+2. Install the Nvidia drivers.
+```
+apt-get install ubuntu-drivers-common && sudo ubuntu-drivers autoinstall -y
+```
+Restart
+```
+sudo shutdown -r now
+```
+
+3. Install Nvidia COntainer Runtime
+
+Creer un fichier vide
+```
+touch nvidia-container-runtime-script.sh
+```
+```
+nano nvidia-container-runtime-script.sh
+```
+Mettre ca dedans
+```
+curl -s -L https://nvidia.github.io/nvidia-container-runtime/gpgkey | \
+  sudo apt-key add -
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L https://nvidia.github.io/nvidia-container-runtime/$distribution/nvidia-container-runtime.list | \
+  sudo tee /etc/apt/sources.list.d/nvidia-container-runtime.list
+sudo apt-get update
+```
+Executer le script
+```
+sh nvidia-container-runtime-script.sh
+```
+
+Installer le runtime
+```
+apt-get install nvidia-container-runtime -y
+```
+
+Regarder si le hook est configurer
+```
+tensorflow-gpu:~$ which nvidia-container-runtime-hook
+/usr/bin/nvidia-container-runtime-hook
+```
+
+3. Docker installation
+Using the convient script
+```
+tensorflow-gpu@demo:~$ curl -fsSL https://get.docker.com -o get-docker.sh
+tensorflow-gpu@demo:~$ sudo sh get-docker.sh
+````
+Add a non-root user (takes a restart to take effect)
+```
+tensorflow-gpu@demo:~$ sudo usermod -aG docker cummings_guillaume
+```
+Verifier l'installation
+```
+sudo docker version
+```
+
+Verifier l'option gpu pour docker run
+```
+tensorflow-gpu:~$ docker run --help | grep -i gpus
+      --gpus gpu-request               GPU devices to add to the container ('all' to pass all GPUs)
+```
+
+Tester un container pour voir le panneau Nvidia-smi avec l'option `--gpus all`:
+```
+cummings_guillaume@tensorflow-gpu:~$ sudo docker run -it --rm --gpus all ubuntu nvidia-smi
+Unable to find image 'ubuntu:latest' locally
+latest: Pulling from library/ubuntu
+6a5697faee43: Pull complete 
+ba13d3bc422b: Pull complete 
+a254829d9e55: Pull complete 
+Digest: sha256:fff16eea1a8ae92867721d90c59a75652ea66d29c05294e6e2f898704bdb8cf1
+Status: Downloaded newer image for ubuntu:latest
+Sat Nov 14 15:16:52 2020       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 450.80.02    Driver Version: 450.80.02    CUDA Version: N/A      |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  Tesla P100-PCIE...  Off  | 00000000:00:04.0 Off |                    0 |
+| N/A   37C    P0    27W / 250W |      0MiB / 16280MiB |      4%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+```
+Verifier si docker voit les bonnes informations de cartes:
+```
+cummings_guillaume@tensorflow-gpu:~$ sudo docker run -it --rm --gpus all ubuntu nvidia-smi -L
+GPU 0: Tesla P100-PCIE-16GB (UUID: GPU-81c18f90-dd00-61d7-7581-120bc6f10cf0)
+```
+
+Lancer l'image de tensorflow avec l'option gpu en mode detacher et exposer le port.
+```
+sudo docker run -it -d -p 8888:8888 --gpus all tensorflow/tensorflow:1.15.4-gpu-py3-jupyter
+```
+Recuperer l'id du container
+```console
+cummings_guillaume@tensorflow-gpu:~$ sudo docker ps
+CONTAINER ID        IMAGE                                          COMMAND                  CREATED             STATUS              PORTS                    NAMES
+964b9789b1b1        tensorflow/tensorflow:1.15.4-gpu-py3-jupyter   "bash -c 'source /et…"   5 seconds ago       Up 4 seconds        0.0.0.0:8888->8888/tcp   hopeful_per
+lman
+```
+
+Se connecter sur la machine, installer git et cloner le repo du cours.
+```console
+cummings_guillaume@tensorflow-gpu:~$ sudo docker exec -it 964b9789b1b1 /bin/bash
+________                               _______________                
+___  __/__________________________________  ____/__  /________      __
+__  /  _  _ \_  __ \_  ___/  __ \_  ___/_  /_   __  /_  __ \_ | /| / /
+_  /   /  __/  / / /(__  )/ /_/ /  /   _  __/   _  / / /_/ /_ |/ |/ / 
+/_/    \___//_/ /_//____/ \____//_/    /_/      /_/  \____/____/|__/
+WARNING: You are running this container as root, which can cause new files in
+mounted volumes to be created as the root user on your host machine.
+To avoid this, run the container by specifying your user's userid:
+$ docker run -u $(id -u):$(id -g) args...
+root@964b9789b1b1:/tf# 
+```
+```
+apt install git -y && git clone https://github.com/mswawola-cegep/csfoy-420-a59-sf.git
+```
+
+# Manual installation
 
 ## Install basic ubuntu tools
 
