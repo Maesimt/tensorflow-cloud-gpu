@@ -141,9 +141,17 @@ To avoid this, run the container by specifying your user's userid:
 $ docker run -u $(id -u):$(id -g) args...
 root@964b9789b1b1:/tf# 
 ```
+
+Installer git et activer le credential store pour eviter de rentrer les credentials a chaque fois.
 ```console
-root@964b9789b1b1:/tf# apt install git -y && git clone https://github.com/mswawola-cegep/csfoy-420-a59-sf.git
+root@964b9789b1b1:/tf# apt install git -y && git config --global credential.helper 'cache --timeout=3600'  
 ```
+
+Cloner le repository du cours.
+```console
+root@964b9789b1b1:/tf# git clone https://github.com/mswawola-cegep/csfoy-420-a59-sf.git
+```
+
 Recuperer le token juypter pour se logger le site.
 ```console
 root@964b9789b1b1:/tf# jupyter notebook list
